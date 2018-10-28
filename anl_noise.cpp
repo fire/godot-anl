@@ -41,7 +41,7 @@ AccidentalFractalNoise ::AccidentalFractalNoise() {
 	anl_noise.instance();
 
 	seed = 0;
-	period = 64.0f;
+	period = 32.0f;
 	persistence = 0.5f;
 	octaves = 3;
 	lacunarity = 2.0f;
