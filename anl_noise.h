@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef ACCIDENTAL_NOISE_H
-#define ACCIDENTAL_NOISE_H
+#ifndef ACCIDENTAL_FRACTAL_NOISE_H
+#define ACCIDENTAL_FRACTAL_NOISE_H
 
 #include "core/image.h"
 #include "core/reference.h"
@@ -37,9 +37,9 @@
 #include "scene/resources/noise.h"
 #include "scene/resources/texture.h"
 
-class AccidentalNoise : public Noise {
-	GDCLASS(AccidentalNoise, Noise)
-	OBJ_SAVE_TYPE(AccidentalNoise);
+class AccidentalFractalNoise  : public Noise {
+	GDCLASS(AccidentalFractalNoise , Noise)
+	OBJ_SAVE_TYPE(AccidentalFractalNoise );
 
 	Ref<AnlNoise> anl_noise;
 
@@ -60,8 +60,8 @@ class AccidentalNoise : public Noise {
 	void _generate_vbm(int p_size);
 
 public:
-	AccidentalNoise();
-	~AccidentalNoise();
+	AccidentalFractalNoise ();
+	~AccidentalFractalNoise ();
 
 	void _init_seeds();
 
@@ -92,4 +92,4 @@ protected:
 	static void _bind_methods();
 };
 
-#endif // OPEN_SIMPLEX_NOISE_H
+#endif // ACCIDENTAL_FRACTAL_NOISE_H

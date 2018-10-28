@@ -5,7 +5,7 @@
 void register_anl_types() {
 
 	ClassDB::register_class<AnlNoise>();
-	ClassDB::register_class<AccidentalNoise>();
+	ClassDB::register_class<AccidentalFractalNoise>();
 }
 
 void unregister_anl_types() {

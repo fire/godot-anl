@@ -33,14 +33,14 @@
 
 #include "core/core_string_names.h"
 
-void AccidentalNoise::_generate_vbm(int p_size) {
+void AccidentalFractalNoise ::_generate_vbm(int p_size) {
 
 	Index period_index = anl_noise->constant(real_t(p_size) / real_t(get_period()) / real_t(4.0));
 	Index fractal = anl_noise->fractal(seed_index, fractal_layer, persistence_index, lacunarity_index, octave_index, period_index);
 	layer = anl_noise->clamp(fractal, anl_noise->zero(), anl_noise->one()); //discard lower range noise
 }
 
-AccidentalNoise::AccidentalNoise() {
+AccidentalFractalNoise ::AccidentalFractalNoise() {
 
 	anl_noise.instance();
 
@@ -52,10 +52,10 @@ AccidentalNoise::AccidentalNoise() {
 	_init_seeds();
 }
 
-AccidentalNoise::~AccidentalNoise() {
+AccidentalFractalNoise ::~AccidentalFractalNoise() {
 }
 
-void AccidentalNoise::_init_seeds() {
+void AccidentalFractalNoise ::_init_seeds() {
 	Index quintic = anl_noise->constant(3);
 	//Notice quintic interpolation is passed by index, not enum value.
 	//I think this is done to use different kind of interpolation at each coordinate... or a bug
@@ -66,7 +66,7 @@ void AccidentalNoise::_init_seeds() {
 	octave_index = anl_noise->constant(get_octaves());
 }
 
-void AccidentalNoise::set_seed(int p_seed) {
+void AccidentalFractalNoise ::set_seed(int p_seed) {
 	if (seed == p_seed)
 		return;
 
@@ -75,46 +75,45 @@ void AccidentalNoise::set_seed(int p_seed) {
 	emit_changed();
 }
 
-int AccidentalNoise::get_seed() const {
+int AccidentalFractalNoise ::get_seed() const {
 
 	return seed;
 }
 
-void AccidentalNoise::set_octaves(int p_octaves) {
+void AccidentalFractalNoise ::set_octaves(int p_octaves) {
 	if (p_octaves == octaves) return;
 	octaves = CLAMP(p_octaves, 1, 6);
 	_init_seeds();
 	emit_changed();
 }
 
-int AccidentalNoise::get_octaves() const {
+int AccidentalFractalNoise ::get_octaves() const {
 	return octaves;
 }
 
-void AccidentalNoise::set_period(float p_period) {
+void AccidentalFractalNoise ::set_period(float p_period) {
 	ERR_FAIL_COND(p_period <= 0);
 	period = p_period;
 	_init_seeds();
 	emit_changed();
 }
 
-float AccidentalNoise::get_period() const
-{
+float AccidentalFractalNoise ::get_period() const {
 	return period;
 }
 
-void AccidentalNoise::set_persistence(float p_persistence) {
+void AccidentalFractalNoise ::set_persistence(float p_persistence) {
 	if (p_persistence == persistence) return;
 	persistence = p_persistence;
 	_init_seeds();
 	emit_changed();
 }
 
-float AccidentalNoise::get_persistence() const {
+float AccidentalFractalNoise ::get_persistence() const {
 	return persistence;
 }
 
-void AccidentalNoise::set_lacunarity(float p_lacunarity) {
+void AccidentalFractalNoise ::set_lacunarity(float p_lacunarity) {
 
 	if (p_lacunarity == lacunarity) return;
 	lacunarity = p_lacunarity;
@@ -122,46 +121,46 @@ void AccidentalNoise::set_lacunarity(float p_lacunarity) {
 	emit_changed();
 }
 
-float AccidentalNoise::get_lacunarity() const {
+float AccidentalFractalNoise ::get_lacunarity() const {
 	return lacunarity;
 }
 
-Ref<Image> AccidentalNoise::get_image(int p_width, int p_height) {
+Ref<Image> AccidentalFractalNoise ::get_image(int p_width, int p_height) {
 	return anl_noise->map_to_image(Vector2(p_width, p_height), layer, anl::SEAMLESS_NONE);
 }
 
-Vector<Ref<Image> > AccidentalNoise::get_image_3d(int p_x, int p_y, int p_z) {
+Vector<Ref<Image> > AccidentalFractalNoise ::get_image_3d(int p_x, int p_y, int p_z) {
 	int max = MAX(p_x, MAX(p_y, p_z));
 	_generate_vbm(max);
 	return anl_noise->map_to_image_3d(Vector3(p_x, p_y, p_z), layer, anl::SEAMLESS_NONE, AABB(Vector3(0, 0, 0), Vector3(1, 1, 1)));
 }
 
-Ref<Image> AccidentalNoise::get_seamless_image(int p_size) {
+Ref<Image> AccidentalFractalNoise ::get_seamless_image(int p_size) {
 	_generate_vbm(p_size);
 	return anl_noise->map_to_image(Vector2(p_size, p_size), layer, anl::SEAMLESS_XY);
 }
 
-Vector<Ref<Image> > AccidentalNoise::get_seamless_image_3d(int p_size) {
+Vector<Ref<Image> > AccidentalFractalNoise ::get_seamless_image_3d(int p_size) {
 	ERR_FAIL_COND_V(anl_noise.ptr() == NULL, Vector<Ref<Image> >())
 	_generate_vbm(p_size);
 	return anl_noise->map_to_image_3d(Vector3(p_size, p_size, p_size), layer, anl::SEAMLESS_XYZ, AABB(Vector3(0, 0, 0), Vector3(1, 1, 1)));
 }
 
-void AccidentalNoise::_bind_methods() {
+void AccidentalFractalNoise ::_bind_methods() {
 }
 
-float AccidentalNoise::get_noise_2d(float x, float y) {
+float AccidentalFractalNoise ::get_noise_2d(float x, float y) {
 	_generate_vbm(MAX(x, y));
 	return anl_noise->get_scalar_2d(x, y, layer);
 }
 
-float AccidentalNoise::get_noise_3d(float x, float y, float z) {
+float AccidentalFractalNoise ::get_noise_3d(float x, float y, float z) {
 	int max = MAX(x, MAX(y, z));
 	_generate_vbm(max);
 	return anl_noise->get_scalar_3d(x, y, z, layer);
 }
 
-float AccidentalNoise::get_noise_4d(float x, float y, float z, float w) {
+float AccidentalFractalNoise ::get_noise_4d(float x, float y, float z, float w) {
 	int max = MAX(x, MAX(y, MAX(z, w)));
 	_generate_vbm(max);
 	return anl_noise->get_scalar_4d(x, y, z, w, layer);
