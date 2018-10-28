@@ -35,11 +35,12 @@
 #include "core/reference.h"
 #include "noise.h"
 #include "scene/resources/noise.h"
+#include "scene/resources/fractal_brownian_noise.h"
 #include "scene/resources/texture.h"
 
-class AccidentalFractalNoise  : public Noise {
-	GDCLASS(AccidentalFractalNoise , Noise)
-	OBJ_SAVE_TYPE(AccidentalFractalNoise );
+class AccidentalFractalNoise : public FractalBrownianNoise {
+	GDCLASS(AccidentalFractalNoise, FractalBrownianNoise)
+	OBJ_SAVE_TYPE(AccidentalFractalNoise);
 
 	Ref<AnlNoise> anl_noise;
 
