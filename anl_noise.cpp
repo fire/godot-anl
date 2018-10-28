@@ -59,7 +59,7 @@ void AccidentalFractalNoise ::_init_seeds() {
 	Index seed_index = anl_noise->constant(get_seed());
 	Index fractal_layer = anl_noise->fractal_layer(anl::BasisTypes::BASIS_SIMPLEX, quintic, 1, 10, 1, 1);
 	Index persistence_index = anl_noise->constant(get_persistence());
-	Index lacunarity_index = anl_noise->constant(-get_lacunarity());
+	Index lacunarity_index = anl_noise->constant(get_lacunarity());
 	Index octave_index = anl_noise->constant(get_octaves());
 	int32_t max = MAX(size[0], MAX(size[1], MAX(size[2], size[3])));
 	Index period_index = anl_noise->constant(real_t(max) / real_t(get_period()) / real_t(4.0));
