@@ -34,8 +34,8 @@
 #include "core/image.h"
 #include "core/reference.h"
 #include "noise.h"
-#include "scene/resources/noise.h"
 #include "scene/resources/fractal_brownian_noise.h"
+#include "scene/resources/noise.h"
 #include "scene/resources/texture.h"
 
 class AccidentalFractalNoise : public FractalBrownianNoise {
@@ -45,24 +45,16 @@ class AccidentalFractalNoise : public FractalBrownianNoise {
 	Ref<AnlNoise> anl_noise;
 
 	int32_t seed;
+	Vector<int32_t> size;
 	float persistence; // Controls details, value in [0,1]. Higher increases grain, lower increases smoothness.
 	int32_t octaves; // Number of noise layers
-
-	Index layer;
-	Index fractal_layer;
-	Index seed_index;
-	Index persistence_index;
-	Index lacunarity_index;
-	Index octave_index;
-
 	float period; // Distance above which we start to see similarities. The higher, the longer "hills" will be on a terrain.
 	float lacunarity; // Controls period change across octaves. 2 is usually a good value to address all detail levels.
-
-	void _generate_vbm(int p_size);
+	Index layer;
 
 public:
-	AccidentalFractalNoise ();
-	~AccidentalFractalNoise ();
+	AccidentalFractalNoise();
+	~AccidentalFractalNoise();
 
 	void _init_seeds();
 
@@ -71,6 +63,9 @@ public:
 
 	virtual void set_period(float p_period);
 	virtual float get_period() const;
+
+	virtual void set_size(Vector<int32_t> p_size);
+	virtual Vector<int32_t> get_size() const;
 
 	virtual void set_octaves(int p_octaves);
 	virtual int get_octaves() const;
