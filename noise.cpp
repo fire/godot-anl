@@ -734,19 +734,21 @@ Vector<Ref<Image>> AnlNoise::map_to_image_3d(const Vector3 &size,
 			}
 		} break;
 
-		//case Image::Format::FORMAT_L8: {
-		//	anl::CArray2Dd img(size.x, size.y);
-		//	anl::map2DNoZ(mode, img, kernel, ranges, index);
+		case Image::Format::FORMAT_L8: {
 
-		//	dest_data_image.resize(SIZE);
-		//	PoolVector<uint8_t>::Write w = dest_data_image.write();
-		//	auto src_data = img.getData();
-
-		//	for (int i = 0; i < SIZE; ++i) {
-		//		w[i] = static_cast<uint8_t>(src_data[i] * 255);
-		//	}
-		//	dest_data.push_back(dest_data_image);
-		//} break;
+			anl::CArray2Dd img(size.x, size.y);
+			anl::map2DNoZ(mode, img, kernel, ranges, index);
+			for (size_t k = 0; k < size.z; k++) {
+				PoolVector<uint8_t> dest_data_image;
+				dest_data_image.resize(SIZE);
+				PoolVector<uint8_t>::Write w = dest_data_image.write();
+				auto src_data = img.getData();
+				for (int i = SIZE * k; i < SIZE * (k + 1); i++) {
+					w[i] = static_cast<uint8_t>(src_data[i] * 255);
+				}
+				dest_data.push_back(dest_data_image);
+			}
+		} break;
 	}
 
 	Vector<Ref<Image> > noise;
