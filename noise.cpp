@@ -702,6 +702,62 @@ Ref<Image> AnlNoise::map_to_image(const Vector2& size,
     return noise;
 }
 
+Vector<Ref<Image>> AnlNoise::map_to_image_3d(const Vector3 &size,
+		Index index,
+		anl::EMappingModes mode,
+		const AABB &map,
+		Image::Format format) {
+
+	anl::SMappingRanges ranges(map.position.x, map.position.x + map.size.x,
+			map.position.y, map.position.y + map.size.y, map.position.z, map.position.z + map.size.z);
+
+	Vector<PoolVector<uint8_t>> dest_data;
+	const int SIZE = size.x * size.y;
+
+	switch (format) {
+		case Image::Format::FORMAT_RGBA8: {
+
+			anl::CArray3Drgba img(size.x, size.y, size.z);
+			anl::mapRGBA3D(mode, img, kernel, ranges, index);
+			for (size_t k = 0; k < size.z; k++) {
+				PoolVector<uint8_t> dest_data_image;
+				dest_data_image.resize(SIZE * 4);
+				PoolVector<uint8_t>::Write w = dest_data_image.write();
+				auto src_data = img.getData();
+				for (int dest = 0, src = SIZE * k; src < SIZE * (k + 1); dest += 4, ++src) {
+					w[dest + 0] = static_cast<uint8_t>(src_data[src].r * 255);
+					w[dest + 1] = static_cast<uint8_t>(src_data[src].g * 255);
+					w[dest + 2] = static_cast<uint8_t>(src_data[src].b * 255);
+					w[dest + 3] = static_cast<uint8_t>(src_data[src].a * 255);
+				}
+				dest_data.push_back(dest_data_image);
+			}
+		} break;
+
+		//case Image::Format::FORMAT_L8: {
+		//	anl::CArray2Dd img(size.x, size.y);
+		//	anl::map2DNoZ(mode, img, kernel, ranges, index);
+
+		//	dest_data_image.resize(SIZE);
+		//	PoolVector<uint8_t>::Write w = dest_data_image.write();
+		//	auto src_data = img.getData();
+
+		//	for (int i = 0; i < SIZE; ++i) {
+		//		w[i] = static_cast<uint8_t>(src_data[i] * 255);
+		//	}
+		//	dest_data.push_back(dest_data_image);
+		//} break;
+	}
+
+	Vector<Ref<Image> > noise;
+	for (size_t i = 0; i < dest_data.size(); i++) {
+		Ref<Image> noise_image = memnew(Image);
+		noise_image->create(size.x, size.y, 0, format, dest_data[i]);
+		noise.push_back(noise_image);
+	}
+	return noise;
+}
+
 Ref<Texture> AnlNoise::map_to_texture(const Vector2& texture_size,
                                       Index index,
                                       anl::EMappingModes mode,
@@ -877,7 +933,8 @@ void AnlNoise::_bind_methods() {
     // Image methods
 
     ClassDB::bind_method(D_METHOD("map_to_image", "size", "index", "mode", "mapping_ranges", "format"),&AnlNoise::map_to_image, DEFVAL(anl::EMappingModes::SEAMLESS_NONE), DEFVAL(Rect2(-1, -1, 2, 2)), DEFVAL(Image::Format::FORMAT_RGBA8) );
-    ClassDB::bind_method(D_METHOD("map_to_texture", "size", "index", "mode", "mapping_ranges", "flags"),&AnlNoise::map_to_texture, DEFVAL(anl::EMappingModes::SEAMLESS_NONE), DEFVAL(Rect2(-1, -1, 2, 2)), DEFVAL(Texture::FLAGS_DEFAULT) );
+	//ClassDB::bind_method(D_METHOD("map_to_image_3d", "size", "index", "mode", "mapping_ranges", "format"), &AnlNoise::map_to_image_3d, DEFVAL(anl::EMappingModes::SEAMLESS_NONE), DEFVAL(Rect2(-1, -1, 2, 2)), DEFVAL(Image::Format::FORMAT_RGBA8));
+	ClassDB::bind_method(D_METHOD("map_to_texture", "size", "index", "mode", "mapping_ranges", "flags"),&AnlNoise::map_to_texture, DEFVAL(anl::EMappingModes::SEAMLESS_NONE), DEFVAL(Rect2(-1, -1, 2, 2)), DEFVAL(Texture::FLAGS_DEFAULT) );
 
     ClassDB::bind_method(D_METHOD("gen_texture", "size", "mode", "index", "filename"),&AnlNoise::gen_texture);
 

@@ -20,7 +20,7 @@ if env['target'] == 'release':
 else:  # release_debug, debug
     module_env.Append(CPPFLAGS=['-std=c++11'])
 
-# module_env.Append(CPPDEFINES=['ANL_LONG_PERIOD_HASHING'])
+module_env.Append(CPPDEFINES=['ANL_LONG_PERIOD_HASHING'])
 
 for key, value in ARGLIST:
     if key == 'define':
