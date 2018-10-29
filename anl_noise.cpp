@@ -62,8 +62,7 @@ void AccidentalFractalNoise ::_init_seeds() {
 	Index lacunarity_index = anl_noise->constant(get_lacunarity());
 	Index octave_index = anl_noise->constant(get_octaves());
 	int32_t max = MAX(size[0], MAX(size[1], MAX(size[2], size[3])));
-	Index period_index = anl_noise->constant(real_t(max) / real_t(get_period()) / real_t(4.0));
-	Index fractal = anl_noise->fractal(seed_index, fractal_layer, persistence_index, lacunarity_index, octave_index, period_index);
+	Index fractal = anl_noise->fractal(seed_index, fractal_layer, persistence_index, lacunarity_index, octave_index, anl_noise->one());
 	layer = anl_noise->clamp(fractal, anl_noise->zero(), anl_noise->one()); //discard lower range noise
 }
 
@@ -141,7 +140,8 @@ Ref<Image> AccidentalFractalNoise ::get_seamless_image(int p_size) {
 
 Vector<Ref<Image> > AccidentalFractalNoise ::get_seamless_image_3d(int p_size) {
 	ERR_FAIL_COND_V(anl_noise.ptr() == NULL, Vector<Ref<Image> >())
-	return anl_noise->map_to_image_3d(Vector3(p_size, p_size, p_size), layer, anl::SEAMLESS_XYZ, AABB(Vector3(0, 0, 0), Vector3(1, 1, 1)));
+	return anl_noise->map_to_image_3d(Vector3(p_size, p_size, p_size), layer, anl::SEAMLESS_XYZ, AABB(Vector3(0, 0, 0),
+		Vector3(real_t(p_size) / real_t(get_period()), real_t(p_size) / real_t(get_period()), real_t(p_size) / real_t(get_period()))));
 }
 
 void AccidentalFractalNoise ::_bind_methods() {
